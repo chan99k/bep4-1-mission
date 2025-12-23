@@ -6,15 +6,18 @@ import static jakarta.persistence.FetchType.*;
 import java.util.List;
 
 import com.back.boundedcontext.member.entity.Member;
+import com.back.boundedcontext.post.event.PostCommentCreated;
 import com.back.global.jpa.entity.BaseIdAndTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Post extends BaseIdAndTime {
 	@ManyToOne(fetch = LAZY)
@@ -38,12 +41,14 @@ public class Post extends BaseIdAndTime {
 		return !comments.isEmpty();
 	}
 
-	public void addComment(Member author, String content) {
+	public PostComment addComment(Member author, String content) {
 		PostComment postComment = new PostComment(this, author, content);
 
 		comments.add(postComment);
-		author.increaseActivityScore(1);
 
+		this.registerEvent(PostCommentCreated.from(postComment));
+
+		return postComment;
 	}
 
 }

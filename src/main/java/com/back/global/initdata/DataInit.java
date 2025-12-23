@@ -79,18 +79,19 @@ public class DataInit {
 		Member user2Member = memberService.findByUsername("user2").get();
 		Member user3Member = memberService.findByUsername("user3").get();
 
-		if (post1.hasComments()) return;
+		if (post1.hasComments())
+			return;
 
-		post1.addComment(user1Member, "댓글1");
-		post1.addComment(user2Member, "댓글2");
-		post1.addComment(user3Member, "댓글3");
+		postService.addComment(post1.getId(), user1Member.getId(), "댓글1");
+		postService.addComment(post1.getId(), user2Member.getId(), "댓글2");
+		postService.addComment(post1.getId(), user3Member.getId(), "댓글3");
 
-		post2.addComment(user2Member, "댓글4");
-		post2.addComment(user2Member, "댓글5");
 
-		post3.addComment(user3Member, "댓글6");
-		post3.addComment(user3Member, "댓글7");
+		postService.addComment(post2.getId(), user2Member.getId(), "댓글4");
+		postService.addComment(post2.getId(), user2Member.getId(), "댓글5");
 
-		post4.addComment(user1Member, "댓글8");
+		postService.addComment(post3.getId(), user3Member.getId(), "댓글6");
+		postService.addComment(post3.getId(), user3Member.getId(), "댓글7");
+		postService.addComment(post4.getId(), user1Member.getId(), "댓글8");
 	}
 }

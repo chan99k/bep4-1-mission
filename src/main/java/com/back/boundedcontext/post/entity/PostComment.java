@@ -9,10 +9,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@RequiredArgsConstructor
+@Getter
+@NoArgsConstructor
 public class PostComment extends BaseIdAndTime {
 
 	@ManyToOne(fetch = LAZY)
@@ -25,6 +27,7 @@ public class PostComment extends BaseIdAndTime {
 	private String content;
 
 	public PostComment(Post parent, Member author, String content) {
+		super();
 		this.content = content;
 		this.member = author;
 		this.post = parent;
