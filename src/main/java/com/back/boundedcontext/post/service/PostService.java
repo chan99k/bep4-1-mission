@@ -11,7 +11,7 @@ import com.back.boundedcontext.post.entity.PostComment;
 import com.back.boundedcontext.post.event.PostCommentCreated;
 import com.back.boundedcontext.post.event.PostCreated;
 import com.back.boundedcontext.post.repository.PostRepository;
-import com.back.global.EventPublisher;
+import com.back.global.eventpublisher.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 

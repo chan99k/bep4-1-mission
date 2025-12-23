@@ -1,4 +1,4 @@
-package com.back.global;
+package com.back.global.eventpublisher;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

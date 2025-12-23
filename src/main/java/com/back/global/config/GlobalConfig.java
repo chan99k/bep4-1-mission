@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.back.global.EventPublisher;
+import com.back.global.eventpublisher.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 
