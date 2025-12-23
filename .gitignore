@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### h2 db ###
+db_dev.mv.db
+db_dev.trace.db
+.env

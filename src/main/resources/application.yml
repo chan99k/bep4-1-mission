@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+
+  application:
+    name: back
+
+  profiles:
+    active: dev
+# ANSI 컬러 로그 : 콘솔 로그에 색상 출력
+  output:
+    ansi:
+      enabled: always
+# Jackson 직렬화 설정
+  Jackson:
+    serialization:
+      fail-on-empty-beans: false # 프로퍼티가 하나도 없는 객체를 JSON으로 변환할 때, 예외가 발생하지 않는다
+
+
+logging:
+  level:
+    com.back: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
