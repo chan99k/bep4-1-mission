@@ -37,12 +37,12 @@ public class Post extends BaseIdAndTime {
 		return !comments.isEmpty();
 	}
 
-	public PostComment addComment(Member author, String content) {
+	public void addComment(Member author, String content) {
 		PostComment postComment = new PostComment(this, author, content);
 
 		comments.add(postComment);
+		author.increaseActivityScore(1);
 
-		return postComment;
 	}
 
 }
