@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.back.boundedcontext.member.entity.Member;
-import com.back.boundedcontext.member.service.MemberService;
-import com.back.boundedcontext.post.entity.Post;
-import com.back.boundedcontext.post.service.PostService;
+import com.back.boundedcontext.member.app.MemberService;
+import com.back.boundedcontext.member.domain.Member;
+import com.back.boundedcontext.post.app.PostService;
+import com.back.boundedcontext.post.domain.Post;
 
 import lombok.extern.slf4j.Slf4j;
 

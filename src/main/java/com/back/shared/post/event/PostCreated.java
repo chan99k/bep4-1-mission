@@ -1,4 +1,4 @@
-package com.back.boundedcontext.post.event;
+package com.back.shared.post.event;
 
 import java.time.LocalDateTime;
 

@@ -1,13 +1,13 @@
-package com.back.boundedcontext.post.entity;
+package com.back.boundedcontext.post.domain;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
 import java.util.List;
 
-import com.back.boundedcontext.member.entity.Member;
-import com.back.boundedcontext.post.event.PostCommentCreated;
+import com.back.boundedcontext.member.domain.Member;
 import com.back.global.jpa.entity.BaseIdAndTime;
+import com.back.shared.post.event.PostCommentCreated;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

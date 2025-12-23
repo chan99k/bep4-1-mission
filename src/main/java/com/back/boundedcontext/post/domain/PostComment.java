@@ -1,8 +1,8 @@
-package com.back.boundedcontext.post.entity;
+package com.back.boundedcontext.post.domain;
 
 import static jakarta.persistence.FetchType.*;
 
-import com.back.boundedcontext.member.entity.Member;
+import com.back.boundedcontext.member.domain.Member;
 import com.back.global.jpa.entity.BaseIdAndTime;
 
 import jakarta.persistence.Column;

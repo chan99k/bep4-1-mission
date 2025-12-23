@@ -1,17 +1,17 @@
-package com.back.boundedcontext.post.service;
+package com.back.boundedcontext.post.app;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.back.boundedcontext.member.entity.Member;
-import com.back.boundedcontext.member.service.MemberService;
-import com.back.boundedcontext.post.entity.Post;
-import com.back.boundedcontext.post.entity.PostComment;
-import com.back.boundedcontext.post.event.PostCommentCreated;
-import com.back.boundedcontext.post.event.PostCreated;
-import com.back.boundedcontext.post.repository.PostRepository;
+import com.back.boundedcontext.member.app.MemberService;
+import com.back.boundedcontext.member.domain.Member;
+import com.back.boundedcontext.post.domain.Post;
+import com.back.boundedcontext.post.domain.PostComment;
+import com.back.boundedcontext.post.out.PostRepository;
 import com.back.global.eventpublisher.EventPublisher;
+import com.back.shared.post.event.PostCommentCreated;
+import com.back.shared.post.event.PostCreated;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,8 +1,8 @@
-package com.back.boundedcontext.post.event;
+package com.back.shared.post.event;
 
 import java.time.LocalDateTime;
 
-import com.back.boundedcontext.post.entity.PostComment;
+import com.back.boundedcontext.post.domain.PostComment;
 
 public record PostCommentCreated(
 	int id,
