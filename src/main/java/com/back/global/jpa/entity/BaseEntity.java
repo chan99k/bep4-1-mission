@@ -1,4 +1,4 @@
-package com.back.jpa.entity;
+package com.back.global.jpa.entity;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

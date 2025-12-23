@@ -1,11 +1,12 @@
-package com.back.entity;
+package com.back.boundedcontext.post.entity;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
 import java.util.List;
 
-import com.back.jpa.entity.BaseIdAndTime;
+import com.back.boundedcontext.member.entity.Member;
+import com.back.global.jpa.entity.BaseIdAndTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
