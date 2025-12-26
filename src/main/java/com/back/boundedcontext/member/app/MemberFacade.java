@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberFacade {
 	private final MemberRepository memberRepository;
 
 	public long count() {

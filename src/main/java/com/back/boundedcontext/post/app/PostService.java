@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.back.boundedcontext.member.app.MemberService;
+import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.domain.PostComment;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
 	private final PostRepository postRepository;
-	private final MemberService memberService;
+	private final MemberFacade memberFacade;
 	private final EventPublisher eventPublisher;
 
 	public long count() {
@@ -47,7 +47,7 @@ public class PostService {
 	}
 
 	public void addComment(int postId, int memberId, String comment) {
-		Member member = memberService.findById(memberId).orElseThrow();
+		Member member = memberFacade.findById(memberId).orElseThrow();
 		Post post = postRepository.findById(postId).orElseThrow();
 		PostComment postComment = post.addComment(member, comment);
 		eventPublisher.publishEvent(PostCommentCreated.from(postComment));

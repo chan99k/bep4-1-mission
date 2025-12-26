@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.back.boundedcontext.member.app.MemberService;
+import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.app.PostService;
 import com.back.boundedcontext.post.domain.Post;
@@ -17,13 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataInit {
 	private final DataInit self; // 자기 자신을 프록시로 호출하여 트랜잭션을 적용하기 위해
-	private final MemberService memberService;
+	private final MemberFacade memberFacade;
 	private final PostService postService;
 
-	public DataInit(@Lazy DataInit self, MemberService memberService,
-		PostService postService) { // 실제 프록시를 생성자 호출 시점이 아니라 나중에 초기화 -> 자기자신의 순환 참조 막기 위해
+	public DataInit(
+		@Lazy DataInit self, MemberFacade memberFacade,//실제 프록시를 생성자 호출 시점이 아니라 나중에 초기화 -> 자기자신의 순환 참조 막기 위해
+		PostService postService
+	) {
 		this.self = self;
-		this.memberService = memberService;
+		this.memberFacade = memberFacade;
 		this.postService = postService;
 	}
 
@@ -38,15 +40,15 @@ public class DataInit {
 
 	@Transactional
 	public void makeBaseMembers() {
-		if (memberService.count() > 0)
+		if (memberFacade.count() > 0)
 			return;
 
-		memberService.join("system", "1234", "시스템");
-		memberService.join("holding", "1234", "홀딩");
-		memberService.join("admin", "1234", "관리자");
-		memberService.join("user1", "1234", "유저1");
-		memberService.join("user2", "1234", "유저2");
-		memberService.join("user3", "1234", "유저3");
+		memberFacade.join("system", "1234", "시스템");
+		memberFacade.join("holding", "1234", "홀딩");
+		memberFacade.join("admin", "1234", "관리자");
+		memberFacade.join("user1", "1234", "유저1");
+		memberFacade.join("user2", "1234", "유저2");
+		memberFacade.join("user3", "1234", "유저3");
 	}
 
 	@Transactional
@@ -54,9 +56,9 @@ public class DataInit {
 		if (postService.count() > 0)
 			return;
 
-		Member user1Member = memberService.findByUsername("user1").orElseThrow();
-		Member user2Member = memberService.findByUsername("user2").orElseThrow();
-		Member user3Member = memberService.findByUsername("user3").orElseThrow();
+		Member user1Member = memberFacade.findByUsername("user1").orElseThrow();
+		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
+		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
 
 		postService.write(user1Member, "제목1", "내용1");
 		postService.write(user1Member, "제목2", "내용2");
@@ -75,9 +77,9 @@ public class DataInit {
 		postService.findById(5).get();
 		postService.findById(6).get();
 
-		Member user1Member = memberService.findByUsername("user1").get();
-		Member user2Member = memberService.findByUsername("user2").get();
-		Member user3Member = memberService.findByUsername("user3").get();
+		Member user1Member = memberFacade.findByUsername("user1").get();
+		Member user2Member = memberFacade.findByUsername("user2").get();
+		Member user3Member = memberFacade.findByUsername("user3").get();
 
 		if (post1.hasComments())
 			return;
@@ -85,7 +87,6 @@ public class DataInit {
 		postService.addComment(post1.getId(), user1Member.getId(), "댓글1");
 		postService.addComment(post1.getId(), user2Member.getId(), "댓글2");
 		postService.addComment(post1.getId(), user3Member.getId(), "댓글3");
-
 
 		postService.addComment(post2.getId(), user2Member.getId(), "댓글4");
 		postService.addComment(post2.getId(), user2Member.getId(), "댓글5");

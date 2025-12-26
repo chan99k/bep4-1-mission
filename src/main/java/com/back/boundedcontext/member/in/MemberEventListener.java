@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.back.boundedcontext.member.app.MemberService;
+import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
 import com.back.shared.post.event.PostCommentCreated;
 import com.back.shared.post.event.PostCreated;
@@ -18,13 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberEventListener {
-	private final MemberService memberService;
+	private final MemberFacade memberFacade;
 
 	private void increaseMemberActivityScore(int memberId, int score) {
-		Member member = memberService.findById(memberId).orElseThrow();
+		Member member = memberFacade.findById(memberId).orElseThrow();
+
 		int before = member.getActivityScore();
 		member.increaseActivityScore(score);
 		int after = member.getActivityScore();
+
 		log.debug("[Event] 사용자 활동 점수가 {} -> {} 로 증가하였습니다.", before, after);
 	}
 
