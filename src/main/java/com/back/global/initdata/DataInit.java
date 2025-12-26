@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.member.app.MemberFacade;
-import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.app.PostFacade;
 import com.back.boundedcontext.post.app.PostWriteUseCase;
 import com.back.boundedcontext.post.domain.Post;
+import com.back.boundedcontext.post.domain.PostMember;
 import com.back.global.rsdata.RsData;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,26 +60,26 @@ public class DataInit {
 		if (postWriteUseCase.count() > 0)
 			return;
 
-		Member user1Member = memberFacade.findByUsername("user1").orElseThrow();
-		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
-		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
+		PostMember user1Member = postFacade.findPostMemberByUsername("user1").orElseThrow();
+		PostMember user2Member = postFacade.findPostMemberByUsername("user2").orElseThrow();
+		PostMember user3Member = postFacade.findPostMemberByUsername("user3").orElseThrow();
 
-		RsData<Post> post1RsData = postFacade.write(user1Member.getId(), "제목1", "내용1");
+		RsData<Post> post1RsData = postFacade.write(user1Member, "제목1", "내용1");
 		log.debug(post1RsData.msg());
 
-		RsData<Post> post2RsData = postFacade.write(user1Member.getId(), "제목2", "내용2");
+		RsData<Post> post2RsData = postFacade.write(user1Member, "제목2", "내용2");
 		log.debug(post2RsData.msg());
 
-		RsData<Post> post3RsData = postFacade.write(user1Member.getId(), "제목3", "내용3");
+		RsData<Post> post3RsData = postFacade.write(user1Member, "제목3", "내용3");
 		log.debug(post3RsData.msg());
 
-		RsData<Post> post4RsData = postFacade.write(user2Member.getId(), "제목4", "내용4");
+		RsData<Post> post4RsData = postFacade.write(user2Member, "제목4", "내용4");
 		log.debug(post4RsData.msg());
 
-		RsData<Post> post5RsData = postFacade.write(user2Member.getId(), "제목5", "내용5");
+		RsData<Post> post5RsData = postFacade.write(user2Member, "제목5", "내용5");
 		log.debug(post5RsData.msg());
 
-		RsData<Post> post6RsData = postFacade.write(user3Member.getId(), "제목6", "내용6");
+		RsData<Post> post6RsData = postFacade.write(user3Member, "제목6", "내용6");
 		log.debug(post6RsData.msg());
 	}
 
@@ -92,22 +92,22 @@ public class DataInit {
 		postFacade.findById(5).orElseThrow();
 		postFacade.findById(6).orElseThrow();
 
-		Member user1Member = memberFacade.findByUsername("user1").orElseThrow();
-		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
-		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
+		PostMember user1Member = postFacade.findPostMemberByUsername("user1").orElseThrow();
+		PostMember user2Member = postFacade.findPostMemberByUsername("user2").orElseThrow();
+		PostMember user3Member = postFacade.findPostMemberByUsername("user3").orElseThrow();
 
 		if (post1.hasComments())
 			return;
 
-		postWriteUseCase.addComment(post1.getId(), user1Member.getId(), "댓글1");
-		postWriteUseCase.addComment(post1.getId(), user2Member.getId(), "댓글2");
-		postWriteUseCase.addComment(post1.getId(), user3Member.getId(), "댓글3");
+		postWriteUseCase.addComment(post1, user1Member, "댓글1");
+		postWriteUseCase.addComment(post1, user2Member, "댓글2");
+		postWriteUseCase.addComment(post1, user3Member, "댓글3");
 
-		postWriteUseCase.addComment(post2.getId(), user2Member.getId(), "댓글4");
-		postWriteUseCase.addComment(post2.getId(), user2Member.getId(), "댓글5");
+		postWriteUseCase.addComment(post2, user2Member, "댓글4");
+		postWriteUseCase.addComment(post2, user2Member, "댓글5");
 
-		postWriteUseCase.addComment(post3.getId(), user3Member.getId(), "댓글6");
-		postWriteUseCase.addComment(post3.getId(), user3Member.getId(), "댓글7");
-		postWriteUseCase.addComment(post4.getId(), user1Member.getId(), "댓글8");
+		postWriteUseCase.addComment(post3, user3Member, "댓글6");
+		postWriteUseCase.addComment(post3, user3Member, "댓글7");
+		postWriteUseCase.addComment(post4, user1Member, "댓글8");
 	}
 }

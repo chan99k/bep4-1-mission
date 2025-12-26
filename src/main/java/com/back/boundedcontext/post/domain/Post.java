@@ -5,10 +5,13 @@ import static jakarta.persistence.CascadeType.*;
 import java.util.List;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
+import com.back.shared.post.dto.PostCommentDto;
 import com.back.shared.post.event.PostCommentCreated;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -20,9 +23,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "POST_POST")
 public class Post extends BaseIdAndTime {
 
-	private int authorId;
-
-	private String authorNickname;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private PostMember author;
 
 	private String title;
 
@@ -32,9 +34,8 @@ public class Post extends BaseIdAndTime {
 	@OneToMany(mappedBy = "post", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
 	private List<PostComment> comments;
 
-	public Post(int authorId, String authorNickname, String title, String content) {
-		this.authorId = authorId;
-		this.authorNickname = authorNickname;
+	public Post(PostMember author, String title, String content) {
+		this.author = author;
 		this.title = title;
 		this.content = content;
 	}
@@ -43,12 +44,12 @@ public class Post extends BaseIdAndTime {
 		return !comments.isEmpty();
 	}
 
-	public PostComment addComment(int authorId, String authorNickname, String content) {
-		PostComment postComment = new PostComment(this, authorId, authorNickname, content);
+	public PostComment addComment(PostMember author, String content) {
+		PostComment postComment = new PostComment(this, author, content);
 
 		comments.add(postComment);
 
-		this.registerEvent(PostCommentCreated.from(postComment));
+		this.registerEvent(new PostCommentCreated(new PostCommentDto(postComment)));
 
 		return postComment;
 	}

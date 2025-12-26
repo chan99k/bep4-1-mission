@@ -4,12 +4,12 @@ import org.springframework.stereotype.Service;
 
 import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.domain.PostComment;
+import com.back.boundedcontext.post.domain.PostMember;
+import com.back.boundedcontext.post.out.PostMemberRepository;
 import com.back.boundedcontext.post.out.PostRepository;
 import com.back.global.eventpublisher.EventPublisher;
 import com.back.global.rsdata.RsData;
-import com.back.shared.member.dto.MemberBasicInfo;
 import com.back.shared.member.out.MemberApiClient;
-import com.back.shared.post.event.PostCommentCreated;
 import com.back.shared.post.event.PostCreated;
 
 import lombok.RequiredArgsConstructor;
@@ -20,24 +20,25 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 	private final PostRepository postRepository;
 	private final MemberApiClient memberApiClient;
 	private final EventPublisher eventPublisher;
+	private final PostMemberRepository postMemberRepository;
 
 	public long count() {
 		return postRepository.count();
 	}
 
 	// NOTE :: 공통 응답 형식으로 바꾸는 것은 파사드 영역의 횡단 관심사가 아닌지? 유스케이스가 왜 알아야 하나요?
-	public RsData<Post> write(int authorId, String title, String content) {
-		MemberBasicInfo memberBasicInfo = memberApiClient.findMemberBasicInfo(authorId);
+	public RsData<Post> write(PostMember postMember, String title, String content) {
+
 		Post saved = postRepository.save(
-			new Post(memberBasicInfo.memberId(), memberBasicInfo.nickname(), title, content)
+			new Post(postMember, title, content)
 		);
 
 		eventPublisher.publishEvent(new PostCreated(
 			saved.getId(),
 			saved.getCreateDate(),
 			saved.getModifyDate(),
-			saved.getAuthorId(),
-			saved.getAuthorNickname(),
+			saved.getAuthor().getId(),
+			saved.getAuthor().getUsername(),
 			title,
 			content
 		));
@@ -52,10 +53,17 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 		);
 	}
 
-	public void addComment(int postId, int memberId, String comment) {
-		MemberBasicInfo memberBasicInfo = memberApiClient.findMemberBasicInfo(memberId);
-		Post post = postRepository.findById(postId).orElseThrow();
-		PostComment postComment = post.addComment(memberBasicInfo.memberId(), memberBasicInfo.nickname(), comment);
-		eventPublisher.publishEvent(PostCommentCreated.from(postComment));
+	public RsData<PostComment> addComment(Post post, PostMember member, String content) {
+		PostComment postComment = post.addComment(member, content);
+
+		String randomSecureTip = memberApiClient.getRandomSecureTip();
+
+		return new RsData<>(
+
+			"201-2",
+			"%d번 댓글이 생성되었습니다. 보안 팁 : %s"
+				.formatted(postComment.getId(), randomSecureTip),
+			postComment
+		);
 	}
 }
