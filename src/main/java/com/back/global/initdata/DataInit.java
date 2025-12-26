@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
-import com.back.boundedcontext.post.app.PostService;
+import com.back.boundedcontext.post.app.PostWriteUseCase;
 import com.back.boundedcontext.post.domain.Post;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 public class DataInit {
 	private final DataInit self; // 자기 자신을 프록시로 호출하여 트랜잭션을 적용하기 위해
 	private final MemberFacade memberFacade;
-	private final PostService postService;
+	private final PostWriteUseCase postWriteUseCase;
 
 	public DataInit(
 		@Lazy DataInit self, MemberFacade memberFacade,//실제 프록시를 생성자 호출 시점이 아니라 나중에 초기화 -> 자기자신의 순환 참조 막기 위해
-		PostService postService
+		PostWriteUseCase postWriteUseCase
 	) {
 		this.self = self;
 		this.memberFacade = memberFacade;
-		this.postService = postService;
+		this.postWriteUseCase = postWriteUseCase;
 	}
 
 	@Bean
@@ -53,29 +53,29 @@ public class DataInit {
 
 	@Transactional
 	public void makeBasePosts() {
-		if (postService.count() > 0)
+		if (postWriteUseCase.count() > 0)
 			return;
 
 		Member user1Member = memberFacade.findByUsername("user1").orElseThrow();
 		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
 		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
 
-		postService.write(user1Member, "제목1", "내용1");
-		postService.write(user1Member, "제목2", "내용2");
-		postService.write(user1Member, "제목3", "내용3");
-		postService.write(user2Member, "제목4", "내용4");
-		postService.write(user2Member, "제목5", "내용5");
-		postService.write(user3Member, "제목6", "내용6");
+		postWriteUseCase.write(user1Member, "제목1", "내용1");
+		postWriteUseCase.write(user1Member, "제목2", "내용2");
+		postWriteUseCase.write(user1Member, "제목3", "내용3");
+		postWriteUseCase.write(user2Member, "제목4", "내용4");
+		postWriteUseCase.write(user2Member, "제목5", "내용5");
+		postWriteUseCase.write(user3Member, "제목6", "내용6");
 	}
 
 	@Transactional
 	public void makeBasePostComments() {
-		Post post1 = postService.findById(1).get();
-		Post post2 = postService.findById(2).get();
-		Post post3 = postService.findById(3).get();
-		Post post4 = postService.findById(4).get();
-		postService.findById(5).get();
-		postService.findById(6).get();
+		Post post1 = postWriteUseCase.findById(1).get();
+		Post post2 = postWriteUseCase.findById(2).get();
+		Post post3 = postWriteUseCase.findById(3).get();
+		Post post4 = postWriteUseCase.findById(4).get();
+		postWriteUseCase.findById(5).get();
+		postWriteUseCase.findById(6).get();
 
 		Member user1Member = memberFacade.findByUsername("user1").get();
 		Member user2Member = memberFacade.findByUsername("user2").get();
@@ -84,15 +84,15 @@ public class DataInit {
 		if (post1.hasComments())
 			return;
 
-		postService.addComment(post1.getId(), user1Member.getId(), "댓글1");
-		postService.addComment(post1.getId(), user2Member.getId(), "댓글2");
-		postService.addComment(post1.getId(), user3Member.getId(), "댓글3");
+		postWriteUseCase.addComment(post1.getId(), user1Member.getId(), "댓글1");
+		postWriteUseCase.addComment(post1.getId(), user2Member.getId(), "댓글2");
+		postWriteUseCase.addComment(post1.getId(), user3Member.getId(), "댓글3");
 
-		postService.addComment(post2.getId(), user2Member.getId(), "댓글4");
-		postService.addComment(post2.getId(), user2Member.getId(), "댓글5");
+		postWriteUseCase.addComment(post2.getId(), user2Member.getId(), "댓글4");
+		postWriteUseCase.addComment(post2.getId(), user2Member.getId(), "댓글5");
 
-		postService.addComment(post3.getId(), user3Member.getId(), "댓글6");
-		postService.addComment(post3.getId(), user3Member.getId(), "댓글7");
-		postService.addComment(post4.getId(), user1Member.getId(), "댓글8");
+		postWriteUseCase.addComment(post3.getId(), user3Member.getId(), "댓글6");
+		postWriteUseCase.addComment(post3.getId(), user3Member.getId(), "댓글7");
+		postWriteUseCase.addComment(post4.getId(), user1Member.getId(), "댓글8");
 	}
 }

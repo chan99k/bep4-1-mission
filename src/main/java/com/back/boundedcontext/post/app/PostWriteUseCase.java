@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class PostWriteUseCase {
 	private final PostRepository postRepository;
 	private final MemberFacade memberFacade;
 	private final EventPublisher eventPublisher;
@@ -26,10 +26,8 @@ public class PostService {
 		return postRepository.count();
 	}
 
-	public void write(Member author, String title, String content) {
-		Post post = new Post(author, title, content);
-
-		Post saved = postRepository.save(post);
+	public Post write(Member author, String title, String content) {
+		Post saved = postRepository.save(new Post(author, title, content));
 
 		eventPublisher.publishEvent(new PostCreated(
 			saved.getId(),
@@ -40,6 +38,8 @@ public class PostService {
 			title,
 			content
 		));
+
+		return saved;
 	}
 
 	public Optional<Post> findById(int id) {
