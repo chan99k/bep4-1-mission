@@ -20,7 +20,7 @@ public class MemberApiClient {
 			.body(String.class);
 	}
 
-	public MemberBasicInfo findPresentMemberId(int memberId) {
+	public MemberBasicInfo findMemberBasicInfo(int memberId) {
 		RsData<MemberBasicInfo> response = restClient.get()
 			.uri("/members/basic-info/{memberId}", memberId)
 			.retrieve()

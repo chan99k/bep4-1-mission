@@ -11,6 +11,7 @@ import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.app.PostFacade;
 import com.back.boundedcontext.post.app.PostWriteUseCase;
 import com.back.boundedcontext.post.domain.Post;
+import com.back.global.rsdata.RsData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,12 +64,23 @@ public class DataInit {
 		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
 		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
 
-		postWriteUseCase.write(user1Member.getId(), "제목1", "내용1");
-		postWriteUseCase.write(user1Member.getId(), "제목2", "내용2");
-		postWriteUseCase.write(user1Member.getId(), "제목3", "내용3");
-		postWriteUseCase.write(user2Member.getId(), "제목4", "내용4");
-		postWriteUseCase.write(user2Member.getId(), "제목5", "내용5");
-		postWriteUseCase.write(user3Member.getId(), "제목6", "내용6");
+		RsData<Post> post1RsData = postFacade.write(user1Member.getId(), "제목1", "내용1");
+		log.debug(post1RsData.msg());
+
+		RsData<Post> post2RsData = postFacade.write(user1Member.getId(), "제목2", "내용2");
+		log.debug(post2RsData.msg());
+
+		RsData<Post> post3RsData = postFacade.write(user1Member.getId(), "제목3", "내용3");
+		log.debug(post3RsData.msg());
+
+		RsData<Post> post4RsData = postFacade.write(user2Member.getId(), "제목4", "내용4");
+		log.debug(post4RsData.msg());
+
+		RsData<Post> post5RsData = postFacade.write(user2Member.getId(), "제목5", "내용5");
+		log.debug(post5RsData.msg());
+
+		RsData<Post> post6RsData = postFacade.write(user3Member.getId(), "제목6", "내용6");
+		log.debug(post6RsData.msg());
 	}
 
 	@Transactional

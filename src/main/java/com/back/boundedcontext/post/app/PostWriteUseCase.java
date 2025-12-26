@@ -27,14 +27,17 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 
 	// NOTE :: 공통 응답 형식으로 바꾸는 것은 파사드 영역의 횡단 관심사가 아닌지? 유스케이스가 왜 알아야 하나요?
 	public RsData<Post> write(int authorId, String title, String content) {
-		Post saved = postRepository.save(new Post(authorId, title, content));
+		MemberBasicInfo memberBasicInfo = memberApiClient.findMemberBasicInfo(authorId);
+		Post saved = postRepository.save(
+			new Post(memberBasicInfo.memberId(), memberBasicInfo.nickname(), title, content)
+		);
 
 		eventPublisher.publishEvent(new PostCreated(
 			saved.getId(),
 			saved.getCreateDate(),
 			saved.getModifyDate(),
 			saved.getAuthorId(),
-			"",
+			saved.getAuthorNickname(),
 			title,
 			content
 		));
@@ -50,7 +53,7 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 	}
 
 	public void addComment(int postId, int memberId, String comment) {
-		MemberBasicInfo memberBasicInfo = memberApiClient.findPresentMemberId(memberId);
+		MemberBasicInfo memberBasicInfo = memberApiClient.findMemberBasicInfo(memberId);
 		Post post = postRepository.findById(postId).orElseThrow();
 		PostComment postComment = post.addComment(memberBasicInfo.memberId(), memberBasicInfo.nickname(), comment);
 		eventPublisher.publishEvent(PostCommentCreated.from(postComment));

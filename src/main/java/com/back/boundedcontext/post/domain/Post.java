@@ -20,6 +20,8 @@ public class Post extends BaseIdAndTime {
 
 	private int authorId;
 
+	private String authorNickname;
+
 	private String title;
 
 	@Column(columnDefinition = "LONGTEXT")
@@ -28,8 +30,9 @@ public class Post extends BaseIdAndTime {
 	@OneToMany(mappedBy = "post", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
 	private List<PostComment> comments;
 
-	public Post(int authorId, String title, String content) {
+	public Post(int authorId, String authorNickname, String title, String content) {
 		this.authorId = authorId;
+		this.authorNickname = authorNickname;
 		this.title = title;
 		this.content = content;
 	}
