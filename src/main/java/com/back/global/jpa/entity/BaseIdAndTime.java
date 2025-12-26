@@ -24,7 +24,7 @@ import lombok.Getter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class BaseIdAndTime extends BaseEntity {
+public abstract class BaseIdAndTime extends BaseEntity {
 	@Transient
 	private final List<Object> domainEvents = new ArrayList<>();
 
