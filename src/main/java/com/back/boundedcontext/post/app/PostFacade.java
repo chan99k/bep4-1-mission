@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.out.PostRepository;
+import com.back.global.rsdata.RsData;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +24,7 @@ public class PostFacade {
 	}
 
 	@Transactional
-	public Post write(Member author, String title, String content) {
+	public RsData<Post> write(Member author, String title, String content) {
 		return postWriteUseCase.write(author, title, content);
 	}
 
