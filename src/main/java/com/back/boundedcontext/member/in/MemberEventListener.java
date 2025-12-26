@@ -24,8 +24,7 @@ public class MemberEventListener {
 		Member member = memberFacade.findById(memberId).orElseThrow();
 
 		int before = member.getActivityScore();
-		member.increaseActivityScore(score);
-		int after = member.getActivityScore();
+		int after = member.increaseActivityScore(score);
 
 		log.debug("[Event] 사용자 활동 점수가 {} -> {} 로 증가하였습니다.", before, after);
 	}
