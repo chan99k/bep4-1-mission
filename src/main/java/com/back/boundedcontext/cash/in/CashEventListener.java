@@ -7,6 +7,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.back.boundedcontext.cash.app.CashFacade;
+import com.back.boundedcontext.cash.domain.CashMember;
 import com.back.shared.member.event.MemberJoined;
 import com.back.shared.member.event.MemberModified;
 
@@ -20,7 +21,8 @@ public class CashEventListener {
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void handle(MemberJoined event) {
-		cashFacade.syncMember(event.member());
+		CashMember cashMember = cashFacade.syncMember(event.member());
+		cashFacade.createWallet(cashMember);
 	}
 
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
