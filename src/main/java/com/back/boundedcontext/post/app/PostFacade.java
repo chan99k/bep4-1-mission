@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.domain.PostMember;
-import com.back.boundedcontext.post.out.PostMemberRepository;
-import com.back.boundedcontext.post.out.PostRepository;
 import com.back.global.rsdata.RsData;
 import com.back.shared.member.dto.MemberDto;
 
@@ -17,13 +15,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PostFacade {
-	private final PostRepository postRepository;
+
 	private final PostWriteUseCase postWriteUseCase;
-	private final PostMemberRepository postMemberRepository;
+	private final PostMemberSyncUseCase postMemberSyncUseCase;
+	private final PostSupport postSupport;
 
 	@Transactional(readOnly = true)
 	public long count() {
-		return postRepository.count();
+		return postSupport.count();
 	}
 
 	@Transactional
@@ -33,30 +32,16 @@ public class PostFacade {
 
 	@Transactional(readOnly = true)
 	public Optional<Post> findById(int id) {
-		return postRepository.findById(id);
+		return postSupport.findById(id);
 	}
 
 	@Transactional
-	public PostMember syncMember(MemberDto member) {
-		PostMember postMember = new PostMember(
-			member.id(),
-			member.createDate(),
-			member.modifyDate(),
-			member.username(),
-			"",
-			member.nickname(),
-			member.activityScore()
-		);
-
-		postMember.setId(member.id());
-		postMember.setCreateDate(member.createDate());
-		postMember.setModifyDate(member.modifyDate());
-
-		return postMemberRepository.save(postMember);
+	public PostMember syncMember(MemberDto memberDto) {
+		return postMemberSyncUseCase.syncMember(memberDto);
 	}
 
 	@Transactional(readOnly = true)
-	public Optional<PostMember> findPostMemberByUsername(String username) {
-		return postMemberRepository.findByUsername(username);
+	public Optional<PostMember> findMemberByUsername(String username) {
+		return postSupport.findMemberByUsername(username);
 	}
 }
