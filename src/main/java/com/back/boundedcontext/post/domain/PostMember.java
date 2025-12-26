@@ -17,8 +17,9 @@ public class PostMember extends ReplicaMember {
 	public PostMember(
 		int id,
 		LocalDateTime createDate, LocalDateTime modifyDate,
-		String username, String password, String nickname
+		String username, String password, String nickname,
+		int activityScore
 	) {
-		super(id, createDate, modifyDate, username, password, nickname);
+		super(id, createDate, modifyDate, username, password, nickname, activityScore);
 	}
 }

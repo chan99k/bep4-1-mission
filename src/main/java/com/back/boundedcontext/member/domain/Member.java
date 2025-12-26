@@ -19,7 +19,6 @@ public class Member extends SourceMember {
 
 	public int increaseActivityScore(int amount) {
 		setActivityScore(getActivityScore() + amount);
-
 		return getActivityScore();
 	}
 }
