@@ -1,13 +1,14 @@
 package com.back.boundedcontext.cash.in;
 
+import static org.springframework.transaction.annotation.Propagation.*;
+import static org.springframework.transaction.event.TransactionPhase.*;
+
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.back.boundedcontext.cash.app.CashFacade;
-import com.back.boundedcontext.cash.domain.CashMember;
+import com.back.shared.cash.event.CashMemberCreated;
 import com.back.shared.member.event.MemberJoined;
 import com.back.shared.member.event.MemberModified;
 
@@ -18,17 +19,21 @@ import lombok.RequiredArgsConstructor;
 public class CashEventListener {
 	private final CashFacade cashFacade;
 
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@TransactionalEventListener(phase = AFTER_COMMIT)
+	@Transactional(propagation = REQUIRES_NEW)
 	public void handle(MemberJoined event) {
-		CashMember cashMember = cashFacade.syncMember(event.member());
-		cashFacade.createWallet(cashMember);
+		cashFacade.syncMember(event.member());
 	}
 
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@TransactionalEventListener(phase = AFTER_COMMIT)
+	@Transactional(propagation = REQUIRES_NEW)
 	public void handle(MemberModified event) {
 		cashFacade.syncMember(event.member());
 	}
 
+	@TransactionalEventListener(phase = AFTER_COMMIT)
+	@Transactional(propagation = REQUIRES_NEW)
+	public void handle(CashMemberCreated event) {
+		cashFacade.createWallet(event.member());
+	}
 }

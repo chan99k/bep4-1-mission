@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.back.boundedcontext.cash.domain.CashMember;
 
-public interface CashMemberRepository extends JpaRepository<CashMember, Long> {
+public interface CashMemberRepository extends JpaRepository<CashMember, Integer> {
 	Optional<CashMember> findByUsername(String username);
 }

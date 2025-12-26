@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.cash.domain.CashMember;
 import com.back.boundedcontext.cash.domain.Wallet;
+import com.back.shared.cash.dto.CashMemberDto;
 import com.back.shared.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class CashFacade {
 	}
 
 	@Transactional
-	public Wallet createWallet(CashMember holder) {
+	public Wallet createWallet(CashMemberDto holder) {
 		return cashCreateWalletUseCase.createWallet(holder);
 	}
 
