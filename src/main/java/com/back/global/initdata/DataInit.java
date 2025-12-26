@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
+import com.back.boundedcontext.post.app.PostFacade;
 import com.back.boundedcontext.post.app.PostWriteUseCase;
 import com.back.boundedcontext.post.domain.Post;
 
@@ -19,14 +20,16 @@ public class DataInit {
 	private final DataInit self; // 자기 자신을 프록시로 호출하여 트랜잭션을 적용하기 위해
 	private final MemberFacade memberFacade;
 	private final PostWriteUseCase postWriteUseCase;
+	private final PostFacade postFacade;
 
 	public DataInit(
 		@Lazy DataInit self, MemberFacade memberFacade,//실제 프록시를 생성자 호출 시점이 아니라 나중에 초기화 -> 자기자신의 순환 참조 막기 위해
-		PostWriteUseCase postWriteUseCase
+		PostWriteUseCase postWriteUseCase, PostFacade postFacade
 	) {
 		this.self = self;
 		this.memberFacade = memberFacade;
 		this.postWriteUseCase = postWriteUseCase;
+		this.postFacade = postFacade;
 	}
 
 	@Bean
@@ -60,26 +63,26 @@ public class DataInit {
 		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
 		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
 
-		postWriteUseCase.write(user1Member, "제목1", "내용1");
-		postWriteUseCase.write(user1Member, "제목2", "내용2");
-		postWriteUseCase.write(user1Member, "제목3", "내용3");
-		postWriteUseCase.write(user2Member, "제목4", "내용4");
-		postWriteUseCase.write(user2Member, "제목5", "내용5");
-		postWriteUseCase.write(user3Member, "제목6", "내용6");
+		postWriteUseCase.write(user1Member.getId(), "제목1", "내용1");
+		postWriteUseCase.write(user1Member.getId(), "제목2", "내용2");
+		postWriteUseCase.write(user1Member.getId(), "제목3", "내용3");
+		postWriteUseCase.write(user2Member.getId(), "제목4", "내용4");
+		postWriteUseCase.write(user2Member.getId(), "제목5", "내용5");
+		postWriteUseCase.write(user3Member.getId(), "제목6", "내용6");
 	}
 
 	@Transactional
 	public void makeBasePostComments() {
-		Post post1 = postWriteUseCase.findById(1).get();
-		Post post2 = postWriteUseCase.findById(2).get();
-		Post post3 = postWriteUseCase.findById(3).get();
-		Post post4 = postWriteUseCase.findById(4).get();
-		postWriteUseCase.findById(5).get();
-		postWriteUseCase.findById(6).get();
+		Post post1 = postFacade.findById(1).orElseThrow();
+		Post post2 = postFacade.findById(2).orElseThrow();
+		Post post3 = postFacade.findById(3).orElseThrow();
+		Post post4 = postFacade.findById(4).orElseThrow();
+		postFacade.findById(5).orElseThrow();
+		postFacade.findById(6).orElseThrow();
 
-		Member user1Member = memberFacade.findByUsername("user1").get();
-		Member user2Member = memberFacade.findByUsername("user2").get();
-		Member user3Member = memberFacade.findByUsername("user3").get();
+		Member user1Member = memberFacade.findByUsername("user1").orElseThrow();
+		Member user2Member = memberFacade.findByUsername("user2").orElseThrow();
+		Member user3Member = memberFacade.findByUsername("user3").orElseThrow();
 
 		if (post1.hasComments())
 			return;

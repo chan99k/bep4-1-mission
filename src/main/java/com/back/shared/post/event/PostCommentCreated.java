@@ -19,8 +19,8 @@ public record PostCommentCreated(
 			comment.getCreateDate(),
 			comment.getModifyDate(),
 			comment.getPost().getId(),
-			comment.getMember().getId(),
-			comment.getMember().getUsername(),
+			comment.getAuthorId(),
+			comment.getAuthorNickname(),
 			comment.getContent()
 		);
 	}

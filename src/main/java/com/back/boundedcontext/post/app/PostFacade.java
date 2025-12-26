@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.back.boundedcontext.member.domain.Member;
 import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.out.PostRepository;
 import com.back.global.rsdata.RsData;
@@ -24,8 +23,8 @@ public class PostFacade {
 	}
 
 	@Transactional
-	public RsData<Post> write(Member author, String title, String content) {
-		return postWriteUseCase.write(author, title, content);
+	public RsData<Post> write(int authorId, String title, String content) {
+		return postWriteUseCase.write(authorId, title, content);
 	}
 
 	@Transactional(readOnly = true)
