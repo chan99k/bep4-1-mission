@@ -41,7 +41,14 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 			content
 		));
 
-		return new RsData<>("201-1", "%d번 글이 생성되었습니다.".formatted(saved.getId()), saved);
+		String randomSecureTip = memberFacade.getRandomSecureTip();
+
+		return new RsData<>(
+			"201-1",
+			"%d번 글이 생성되었습니다. 보안 팁 : %s"
+				.formatted(saved.getId(), randomSecureTip),
+			saved
+		);
 	}
 
 	public Optional<Post> findById(int id) {
