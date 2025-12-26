@@ -38,6 +38,6 @@ public class MemberEventListener {
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void handle(PostCommentCreated event) {
-		increaseMemberActivityScore(event.authorId(), 1);
+		increaseMemberActivityScore(event.postCommentDto().authorId(), 1);
 	}
 }
