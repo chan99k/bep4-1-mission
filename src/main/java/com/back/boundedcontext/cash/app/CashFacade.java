@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.cash.domain.CashMember;
 import com.back.boundedcontext.cash.domain.Wallet;
-import com.back.boundedcontext.cash.out.CashMemberRepository;
-import com.back.boundedcontext.cash.out.WalletRepository;
 import com.back.shared.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
@@ -16,38 +14,27 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CashFacade {
-	private final CashMemberRepository cashMemberRepository;
-	private final WalletRepository walletRepository;
+	private final CashCreateWalletUseCase cashCreateWalletUseCase;
+	private final CashSyncMemberUseCase cashSyncMemberUseCase;
+	private final CashSupport cashSupport;
 
 	@Transactional
 	public CashMember syncMember(MemberDto member) {
-		CashMember cashMember = new CashMember(
-			member.id(),
-			member.createDate(),
-			member.modifyDate(),
-			member.username(),
-			"",
-			member.nickname(),
-			member.activityScore()
-		);
-
-		return cashMemberRepository.save(cashMember);
+		return cashSyncMemberUseCase.syncMember(member);
 	}
 
 	@Transactional
 	public Wallet createWallet(CashMember holder) {
-		Wallet wallet = new Wallet(holder);
-
-		return walletRepository.save(wallet);
+		return cashCreateWalletUseCase.createWallet(holder);
 	}
 
 	@Transactional(readOnly = true)
 	public Optional<CashMember> findMemberByUsername(String username) {
-		return cashMemberRepository.findByUsername(username);
+		return cashSupport.findMemberByUsername(username);
 	}
 
 	@Transactional(readOnly = true)
 	public Optional<Wallet> findWalletByHolder(CashMember holder) {
-		return walletRepository.findByHolder(holder);
+		return cashSupport.findWalletByHolder(holder);
 	}
 }
