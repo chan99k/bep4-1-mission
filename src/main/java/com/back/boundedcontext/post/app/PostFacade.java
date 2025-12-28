@@ -10,6 +10,7 @@ import com.back.boundedcontext.post.domain.Post;
 import com.back.boundedcontext.post.domain.PostMember;
 import com.back.global.rsdata.RsData;
 import com.back.shared.member.dto.MemberDto;
+import com.back.shared.post.dto.PostDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,7 +48,7 @@ public class PostFacade {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Post> findByOrderByIdDesc() {
-		return postSupport.findAllByOrderByIdDesc();
+	public List<PostDto> findByOrderByIdDesc() {
+		return postSupport.findAllByOrderByIdDesc().stream().map(PostDto::from).toList();
 	}
 }

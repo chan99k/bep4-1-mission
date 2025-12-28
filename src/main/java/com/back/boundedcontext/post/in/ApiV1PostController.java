@@ -2,6 +2,7 @@ package com.back.boundedcontext.post.in;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,17 +19,15 @@ import lombok.RequiredArgsConstructor;
 public class ApiV1PostController {
 	private final PostFacade postFacade;
 
-	@GetMapping("/post/")
+	@GetMapping("/posts")
+	@Transactional(readOnly = true)
 	public List<PostDto> getItems() {
-		return postFacade.findByOrderByIdDesc().stream()
-			.map(PostDto::from)
-			.toList();
+		return postFacade.findByOrderByIdDesc();
 	}
 
 	@GetMapping("/posts/{id}")
+	@Transactional(readOnly = true)
 	public PostDto getItem(@PathVariable int id) {
-		return postFacade.findById(id)
-			.map(PostDto::from)
-			.orElseThrow();
+		return postFacade.findById(id).map(PostDto::from).orElseThrow();
 	}
 }

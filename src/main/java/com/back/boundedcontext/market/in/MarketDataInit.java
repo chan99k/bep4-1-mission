@@ -31,9 +31,7 @@ public class MarketDataInit {
 	@Bean
 	@Order(3)
 	public ApplicationRunner marketDataInitApplicationRunner() {
-		return args -> {
-			self.makeBaseProducts();
-		};
+		return args -> self.makeBaseProducts();
 	}
 
 	@Transactional
