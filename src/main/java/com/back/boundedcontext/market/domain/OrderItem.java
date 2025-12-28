@@ -19,7 +19,7 @@ public class OrderItem extends BaseIdAndTime {
 	private String name;
 	private long price;
 	private long salePrice;
-	private double payoutRate = MarketPolicy.PRODUCT_PAYOUT_RATE;
+	private final double payoutRate = MarketPolicy.PRODUCT_PAYOUT_RATE;
 
 	public OrderItem(Order order, Product product, String name, long price, long salePrice) {
 		this.order = order;

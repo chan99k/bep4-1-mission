@@ -3,10 +3,13 @@ package com.back.boundedcontext.market.domain;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
+import com.back.shared.market.dto.OrderDto;
+import com.back.shared.market.event.MarketOrderPaymentRequested;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -22,11 +25,17 @@ import lombok.NoArgsConstructor;
 public class Order extends BaseIdAndTime {
 	@ManyToOne(fetch = LAZY)
 	private MarketMember buyer;
+
 	private long price;
+
 	private long salePrice;
 
 	@OneToMany(mappedBy = "order", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
 	private List<OrderItem> items = new ArrayList<>();
+
+	private LocalDateTime requestPaymentDate;
+
+	private LocalDateTime paymentDate;
 
 	public Order(Cart cart) {
 		this.buyer = cart.getBuyer();
@@ -49,5 +58,28 @@ public class Order extends BaseIdAndTime {
 
 		price += product.getPrice();
 		salePrice += product.getSalePrice();
+	}
+
+	public void completePayment() { // NOTE :: 왜 completePayment 라는 용어? completePaymentRequest 가 정확한 표현 아닌가?
+		paymentDate = LocalDateTime.now();
+	}
+
+	public boolean isPaid() {
+		return paymentDate != null;
+	}
+
+	public void requestPayment(long pgPaymentAmount) {
+		requestPaymentDate = LocalDateTime.now();
+
+		registerEvent(
+			new MarketOrderPaymentRequested(
+				new OrderDto(this),
+				pgPaymentAmount
+			)
+		);
+	}
+
+	public void cancelRequestPayment() {
+		requestPaymentDate = null;
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.back.boundedcontext.market.domain.Cart;
 import com.back.boundedcontext.market.domain.MarketMember;
+import com.back.boundedcontext.market.domain.Order;
 import com.back.boundedcontext.market.domain.Product;
 import com.back.boundedcontext.market.out.CartRepository;
 import com.back.boundedcontext.market.out.MarketMemberRepository;
@@ -40,5 +41,9 @@ public class MarketSupport {
 
 	public long countOrders() {
 		return orderRepository.count();
+	}
+
+	public Optional<Order> findOrderById(int id) {
+		return orderRepository.findById(id);
 	}
 }

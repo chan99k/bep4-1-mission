@@ -9,4 +9,6 @@ import com.back.boundedcontext.cash.domain.Wallet;
 
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 	Optional<Wallet> findByHolder(CashMember holder);
+
+	Optional<Wallet> findByHolderId(int holderId);
 }
