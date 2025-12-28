@@ -1,5 +1,6 @@
 package com.back.boundedcontext.post.app;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -43,5 +44,10 @@ public class PostFacade {
 	@Transactional(readOnly = true)
 	public Optional<PostMember> findMemberByUsername(String username) {
 		return postSupport.findMemberByUsername(username);
+	}
+
+	@Transactional(readOnly = true)
+	public List<Post> findByOrderByIdDesc() {
+		return postSupport.findAllByOrderByIdDesc();
 	}
 }
