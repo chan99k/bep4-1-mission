@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.market.domain.Cart;
 import com.back.boundedcontext.market.domain.MarketMember;
+import com.back.boundedcontext.market.domain.Order;
 import com.back.boundedcontext.market.domain.Product;
+import com.back.boundedcontext.market.out.OrderRepository;
 import com.back.global.rsdata.RsData;
 import com.back.shared.market.dto.MarketMemberDto;
 import com.back.shared.member.dto.MemberDto;
@@ -21,6 +23,8 @@ public class MarketFacade {
 	private final MarketCreateProductUseCase marketCreateProductUseCase;
 	private final MarketSupport marketSupport;
 	private final MarketCreateCartUseCase marketCreateCartUseCase;
+	private final MarketCreateOrderUseCase marketCreateOrderUseCase;
+	private final OrderRepository orderRepository;
 
 	@Transactional
 	public MarketMember syncMember(MemberDto member) {
@@ -39,8 +43,8 @@ public class MarketFacade {
 		int sourceId,
 		String name,
 		String description,
-		int price,
-		int salePrice
+		long price,
+		long salePrice
 	) {
 		return marketCreateProductUseCase.createProduct(
 			seller,
@@ -71,5 +75,13 @@ public class MarketFacade {
 	@Transactional(readOnly = true)
 	public Optional<Product> findProductById(int id) {
 		return marketSupport.findProductById(id);
+	}
+
+	public long ordersCount() {
+		return marketSupport.countOrders();
+	}
+
+	public RsData<Order> createOrder(Cart cart) {
+		return marketCreateOrderUseCase.createOrder(cart);
 	}
 }

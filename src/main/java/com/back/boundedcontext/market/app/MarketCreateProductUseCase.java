@@ -19,8 +19,8 @@ public class MarketCreateProductUseCase {
 		int sourceId,
 		String name,
 		String description,
-		int price,
-		int salePrice
+		long price,
+		long salePrice
 	) {
 		Product product = new Product(
 			seller,
