@@ -7,6 +7,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.back.boundedcontext.market.app.MarketFacade;
+import com.back.shared.market.event.MarketMemberCreated;
 import com.back.shared.member.event.MemberJoined;
 import com.back.shared.member.event.MemberModified;
 
@@ -28,5 +29,11 @@ public class MarketEventListener {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void handle(MemberModified event) {
 		marketFacade.syncMember(event.member());
+	}
+
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void handle(MarketMemberCreated event) {
+		marketFacade.createCart(event.member());
 	}
 }
