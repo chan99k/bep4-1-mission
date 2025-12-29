@@ -10,7 +10,7 @@ import com.back.boundedcontext.member.app.MemberFacade;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/member/api/v1/members")
+@RequestMapping("/api/v1/member/members")
 @RequiredArgsConstructor
 public class ApiV1MemberController {
 	private final MemberFacade memberFacade;

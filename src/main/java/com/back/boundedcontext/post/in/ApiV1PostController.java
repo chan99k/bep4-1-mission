@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("post/api/v1")
+@RequestMapping("/api/v1/post")
 public class ApiV1PostController {
 	private final PostFacade postFacade;
 

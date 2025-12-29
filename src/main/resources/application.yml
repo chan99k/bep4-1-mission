@@ -11,11 +11,11 @@ spring:
 
   profiles:
     active: dev
-# ANSI 컬러 로그 : 콘솔 로그에 색상 출력
+  # ANSI 컬러 로그 : 콘솔 로그에 색상 출력
   output:
     ansi:
       enabled: always
-# Jackson 직렬화 설정
+  # Jackson 직렬화 설정
   Jackson:
     serialization:
       fail-on-empty-beans: false # 프로퍼티가 하나도 없는 객체를 JSON으로 변환할 때, 예외가 발생하지 않는다
@@ -33,3 +33,12 @@ custom:
     toss:
       payments:
         secretKey: ${TOSS_PAYMENTS_SECRET_KEY:}
+    product:
+      payoutRate: 90
+
+  global:
+    internalBackUrl: http://localhost:${server.port:8080}
+
+  member:
+    password:
+      changeDays: 90

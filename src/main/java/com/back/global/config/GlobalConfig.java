@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GlobalConfig {
 
+	public static String INTERNAL_CALL_BACK_URL;
+
 	@Bean
 	public EventPublisher eventPublisher(ApplicationEventPublisher eventPublisher) {
 		return new EventPublisher(eventPublisher);
