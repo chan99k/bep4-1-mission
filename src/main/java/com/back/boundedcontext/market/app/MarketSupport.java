@@ -46,4 +46,8 @@ public class MarketSupport {
 	public Optional<Order> findOrderById(int id) {
 		return orderRepository.findById(id);
 	}
+
+	public Order saveOrder(Order order) {
+		return orderRepository.save(order);
+	}
 }

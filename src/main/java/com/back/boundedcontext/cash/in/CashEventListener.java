@@ -9,6 +9,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.back.boundedcontext.cash.app.CashFacade;
 import com.back.shared.cash.event.CashMemberCreated;
+import com.back.shared.market.event.MarketOrderPaymentRequested;
 import com.back.shared.member.event.MemberJoined;
 import com.back.shared.member.event.MemberModified;
 
@@ -35,5 +36,11 @@ public class CashEventListener {
 	@Transactional(propagation = REQUIRES_NEW)
 	public void handle(CashMemberCreated event) {
 		cashFacade.createWallet(event.member());
+	}
+
+	@TransactionalEventListener(phase = AFTER_COMMIT)
+	@Transactional(propagation = REQUIRES_NEW)
+	public void handle(MarketOrderPaymentRequested event) {
+		cashFacade.handle(event);
 	}
 }
