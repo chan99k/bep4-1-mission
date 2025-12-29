@@ -39,4 +39,8 @@ out/
 ### h2 db ###
 db_dev.mv.db
 db_dev.trace.db
+docs/workthrough/
+
+
+### env ###
 .env

@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ApiV1PostController {
 	private final PostFacade postFacade;
 
+	// TODO: Facade에서 DTO 변환하도록 이동하여 Controller의 @Transactional 제거
 	@GetMapping("/posts")
 	@Transactional(readOnly = true)
 	public List<PostDto> getItems() {

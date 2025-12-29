@@ -37,6 +37,8 @@ public class Order extends BaseIdAndTime {
 
 	private LocalDateTime paymentDate;
 
+	private LocalDateTime cancelDate;
+
 	public Order(Cart cart) {
 		this.buyer = cart.getBuyer();
 
@@ -66,6 +68,14 @@ public class Order extends BaseIdAndTime {
 
 	public boolean isPaid() {
 		return paymentDate != null;
+	}
+
+	public boolean isCanceled() {
+		return cancelDate != null;
+	}
+
+	public boolean isPaymentInProgress() {
+		return requestPaymentDate != null && paymentDate == null && cancelDate == null;
 	}
 
 	public void requestPayment(long pgPaymentAmount) {
