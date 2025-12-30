@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.back.boundedcontext.market.domain.Order;
 import com.back.boundedcontext.market.out.OrderRepository;
-import com.back.shared.cash.event.CashOrderPaymentFailed;
+import com.back.shared.market.dto.OrderDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 public class MarketCancelOrderRequestPaymentUseCase {
 	private final OrderRepository orderRepository;
 
-	public void handle(CashOrderPaymentFailed event) {
-		Order order = orderRepository.findById(event.order().id()).get();
+	public void cancelOrderRequestPayment(OrderDto dto) {
+		Order order = orderRepository.findById(dto.id()).get();
 
 		order.cancelRequestPayment();
 	}
