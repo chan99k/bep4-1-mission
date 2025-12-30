@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.back.boundedcontext.market.domain.MarketMember;
 import com.back.boundedcontext.market.out.MarketMemberRepository;
 import com.back.global.eventpublisher.EventPublisher;
-import com.back.shared.market.dto.MarketMemberDto;
 import com.back.shared.market.event.MarketMemberCreated;
 import com.back.shared.member.dto.MemberDto;
 
@@ -25,7 +24,7 @@ public class MarketSyncMemberUseCase {
 				member.nickname(), member.activityScore()));
 
 		if (isNew) {
-			eventPublisher.publishEvent(new MarketMemberCreated(MarketMemberDto.from(buyer)));
+			eventPublisher.publishEvent(new MarketMemberCreated(buyer.toDto()));
 		}
 
 		return buyer;

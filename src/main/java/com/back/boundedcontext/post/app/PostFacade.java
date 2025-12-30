@@ -49,6 +49,6 @@ public class PostFacade {
 
 	@Transactional(readOnly = true)
 	public List<PostDto> findByOrderByIdDesc() {
-		return postSupport.findAllByOrderByIdDesc().stream().map(PostDto::from).toList();
+		return postSupport.findAllByOrderByIdDesc().stream().map(Post::toDto).toList();
 	}
 }

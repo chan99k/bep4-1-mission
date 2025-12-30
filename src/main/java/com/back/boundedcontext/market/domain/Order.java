@@ -83,7 +83,7 @@ public class Order extends BaseIdAndTime {
 
 		registerEvent(
 			new MarketOrderPaymentRequested(
-				new OrderDto(this),
+				this.toDto(),
 				pgPaymentAmount
 			)
 		);
@@ -91,5 +91,18 @@ public class Order extends BaseIdAndTime {
 
 	public void cancelRequestPayment() {
 		requestPaymentDate = null;
+	}
+
+	public OrderDto toDto() {
+		return new OrderDto(
+			this.getId(),
+			this.getCreateDate(), this.getModifyDate(),
+			this.getBuyer().getId(),
+			this.getBuyer().getUsername(),
+			this.getPrice(),
+			this.getSalePrice(),
+			this.getRequestPaymentDate(),
+			this.getPaymentDate()
+		);
 	}
 }

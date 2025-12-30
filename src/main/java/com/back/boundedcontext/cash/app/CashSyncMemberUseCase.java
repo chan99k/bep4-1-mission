@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.back.boundedcontext.cash.domain.CashMember;
 import com.back.boundedcontext.cash.out.CashMemberRepository;
 import com.back.global.eventpublisher.EventPublisher;
-import com.back.shared.cash.dto.CashMemberDto;
 import com.back.shared.cash.event.CashMemberCreated;
 import com.back.shared.member.dto.MemberDto;
 
@@ -35,7 +34,7 @@ public class CashSyncMemberUseCase {
 		if (isNew) {
 			eventPublisher.publishEvent(
 				new CashMemberCreated(
-					new CashMemberDto(cashMember)
+					cashMember.toDto()
 				)
 			);
 		}

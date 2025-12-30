@@ -24,7 +24,6 @@ public class ApiV1WalletController {
 	) {
 		return cashFacade
 			.findWalletByHolderId(holderId)
-			.map(WalletDto::new)
-			.get();
+			.get().toDto();
 	}
 }

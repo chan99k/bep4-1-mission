@@ -5,7 +5,7 @@ import static jakarta.persistence.CascadeType.*;
 import java.util.List;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
-import com.back.shared.post.dto.PostCommentDto;
+import com.back.shared.post.dto.PostDto;
 import com.back.shared.post.event.PostCommentCreated;
 
 import jakarta.persistence.Column;
@@ -49,9 +49,18 @@ public class Post extends BaseIdAndTime {
 
 		comments.add(postComment);
 
-		this.registerEvent(new PostCommentCreated(new PostCommentDto(postComment)));
+		this.registerEvent(new PostCommentCreated(postComment.toDto()));
 
 		return postComment;
+	}
+
+	public PostDto toDto() {
+		return new PostDto(
+			this.getId(),
+			this.getTitle(),
+			this.getAuthor().getUsername(),
+			this.getContent()
+		);
 	}
 
 }
