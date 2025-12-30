@@ -6,6 +6,10 @@ spring:
   application:
     name: back
 
+  batch:
+    job:
+      enabled: false
+
   config:
     import: optional:file:.env[.properties]
 
