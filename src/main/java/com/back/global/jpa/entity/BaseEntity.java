@@ -10,6 +10,8 @@ import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.back.shared.standard.model.type.CanGetModelTypeCode;
+
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
@@ -22,10 +24,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 // 모든 엔티티들의 조상
-public abstract class BaseEntity {
+public abstract class BaseEntity implements CanGetModelTypeCode {
 	@Transient
 	private final List<Object> domainEvents = new ArrayList<>();
-
+	@Override
 	public String getModelTypeCode() {
 		return this.getClass().getSimpleName();
 	}

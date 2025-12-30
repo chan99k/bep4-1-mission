@@ -49,22 +49,22 @@ public class PostDataInit {
 		PostMember user3Member = postFacade.findMemberByUsername("user3").get();
 
 		RsData<Post> post1RsData = postFacade.write(user1Member, "제목1", "내용1");
-		log.debug(post1RsData.msg());
+		log.debug(post1RsData.message());
 
 		RsData<Post> post2RsData = postFacade.write(user1Member, "제목2", "내용2");
-		log.debug(post2RsData.msg());
+		log.debug(post2RsData.message());
 
 		RsData<Post> post3RsData = postFacade.write(user1Member, "제목3", "내용3");
-		log.debug(post3RsData.msg());
+		log.debug(post3RsData.message());
 
 		RsData<Post> post4RsData = postFacade.write(user2Member, "제목4", "내용4");
-		log.debug(post4RsData.msg());
+		log.debug(post4RsData.message());
 
 		RsData<Post> post5RsData = postFacade.write(user2Member, "제목5", "내용5");
-		log.debug(post5RsData.msg());
+		log.debug(post5RsData.message());
 
 		RsData<Post> post6RsData = postFacade.write(user3Member, "제목6", "내용6");
-		log.debug(post6RsData.msg());
+		log.debug(post6RsData.message());
 	}
 
 	@Transactional
