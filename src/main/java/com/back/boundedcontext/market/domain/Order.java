@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
 import com.back.shared.market.dto.OrderDto;
+import com.back.shared.market.event.MarketOrderPaymentCompleted;
 import com.back.shared.market.event.MarketOrderPaymentRequested;
 
 import jakarta.persistence.Entity;
@@ -64,6 +65,12 @@ public class Order extends BaseIdAndTime {
 
 	public void completePayment() { // NOTE :: 왜 completePayment 라는 용어? completePaymentRequest 가 정확한 표현 아닌가?
 		paymentDate = LocalDateTime.now();
+
+		this.registerEvent(
+			new MarketOrderPaymentCompleted(
+				toDto()
+			)
+		);
 	}
 
 	public boolean isPaid() {
