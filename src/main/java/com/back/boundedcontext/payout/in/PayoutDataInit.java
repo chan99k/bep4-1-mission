@@ -1,7 +1,17 @@
 package com.back.boundedcontext.payout.in;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.job.parameters.InvalidJobParametersException;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.launch.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.JobRestartException;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 public class PayoutDataInit {
 	private final PayoutDataInit self;
 	private final PayoutFacade payoutFacade;
+	private final JobOperator jobOperator;
+	private final Job payoutCollectItemsJob;
 
 	public PayoutDataInit(
 		@Lazy PayoutDataInit self,
-		PayoutFacade payoutFacade
+		PayoutFacade payoutFacade, JobOperator jobOperator, Job payoutCollectItemsJob
 	) {
 		this.self = self;
 		this.payoutFacade = payoutFacade;
+		this.jobOperator = jobOperator;
+		this.payoutCollectItemsJob = payoutCollectItemsJob;
 	}
 
 	@Bean
@@ -35,14 +49,15 @@ public class PayoutDataInit {
 		return args -> {
 			self.forceMakePayoutReadyCandidatesItems();
 			self.collectPayoutItemsMore();
+			runCollectPayoutItemsBatchJob();
 		};
 	}
 
 	/**
-	 * 정산 후보 항목들을 정산 가능 상태(Ready)로 강제 변경합니다.
+	 * 정산 후보 항목들을 정산 가능 상태(Ready)로 강제 변경
 	 * <p>
 	 * 테스트 또는 초기 데이터 구축을 위해 정산 후보 항목들의 결제 날짜를
-	 * 정산 대기 기간(PAYOUT_READY_WAITING_DAYS) 이전으로 강제 설정합니다.
+	 * 정산 대기 기간(PAYOUT_READY_WAITING_DAYS) 이전으로 강제 설정
 	 * </p>
 	 */
 	@Transactional
@@ -59,7 +74,26 @@ public class PayoutDataInit {
 	@Transactional
 	public void collectPayoutItemsMore() {
 		payoutFacade.collectPayoutItemsMore(4);
-		payoutFacade.collectPayoutItemsMore(2);
-		payoutFacade.collectPayoutItemsMore(2);
+	}
+
+	private void runCollectPayoutItemsBatchJob() {
+		JobParameters jobParameters = new JobParametersBuilder()
+			.addString(
+				"runDate",
+				LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+			)
+			.toJobParameters();
+
+		try {
+			jobOperator.start(payoutCollectItemsJob, jobParameters);
+		} catch (JobInstanceAlreadyCompleteException e) {
+			log.error("Job instance already complete", e);
+		} catch (JobExecutionAlreadyRunningException e) {
+			log.error("Job execution already running", e);
+		} catch (InvalidJobParametersException e) {
+			log.error("Invalid job parameters", e);
+		} catch (JobRestartException e) {
+			log.error("job restart exception", e);
+		}
 	}
 }
