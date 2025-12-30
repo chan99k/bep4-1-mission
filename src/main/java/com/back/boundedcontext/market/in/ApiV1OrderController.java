@@ -1,8 +1,11 @@
 package com.back.boundedcontext.market.in;
 
+import java.util.List;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.back.boundedcontext.market.app.MarketFacade;
 import com.back.boundedcontext.market.domain.Order;
+import com.back.boundedcontext.market.domain.OrderItem;
 import com.back.boundedcontext.market.out.TossPaymentsService;
 import com.back.global.exception.DomainException;
 import com.back.global.rsdata.RsData;
 import com.back.shared.cash.CashApiClient;
+import com.back.shared.market.dto.OrderItemDto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -44,7 +49,8 @@ public class ApiV1OrderController {
 		allowedHeaders = "*",
 		methods = {RequestMethod.POST}
 	)
-	@PostMapping("/{id}/payment/confirm/by/tossPayments") // http://localhost:8080/api/v1/market/orders/2/payment/confirm/by/tossPayments
+	@PostMapping("/{id}/payment/confirm/by/tossPayments")
+	// http://localhost:8080/api/v1/market/orders/2/payment/confirm/by/tossPayments
 	@Transactional
 	public RsData<Void> confirmPaymentByTossPayments(
 		@PathVariable int id,
@@ -78,6 +84,18 @@ public class ApiV1OrderController {
 		marketFacade.requestPayment(order, reqBody.amount());
 
 		return new RsData<>("202-1", "결제 프로세스가 시작되었습니다.");
+	}
+
+	@GetMapping("/{id}/items")
+	@Transactional(readOnly = true)
+	public List<OrderItemDto> getItems(@PathVariable int id) {
+		return marketFacade
+			.findOrderById(id)
+			.get()
+			.getItems()
+			.stream()
+			.map(OrderItem::toDto)
+			.toList();
 	}
 
 }
