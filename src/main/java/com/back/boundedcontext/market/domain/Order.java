@@ -64,7 +64,7 @@ public class Order extends BaseIdAndTime {
 		salePrice += product.getSalePrice();
 	}
 
-	public void completePayment() { // NOTE :: 왜 completePayment 라는 용어? completePaymentRequest 가 정확한 표현 아닌가?
+	public void completePayment() {
 		paymentDate = LocalDateTime.now();
 
 		this.registerEvent(

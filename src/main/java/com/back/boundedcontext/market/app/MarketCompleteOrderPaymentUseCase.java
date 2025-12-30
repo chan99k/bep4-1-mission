@@ -15,7 +15,7 @@ public class MarketCompleteOrderPaymentUseCase {
 
 	public void completeOrderPayment(OrderDto orderDto) {
 		Order order = orderRepository.findById(orderDto.id()).get();
-
 		order.completePayment();
+		orderRepository.save(order);
 	}
 }
