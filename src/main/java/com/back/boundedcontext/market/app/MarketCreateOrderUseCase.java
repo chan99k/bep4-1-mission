@@ -3,6 +3,7 @@ package com.back.boundedcontext.market.app;
 import org.springframework.stereotype.Service;
 
 import com.back.boundedcontext.market.domain.Cart;
+import com.back.boundedcontext.market.domain.MarketPolicy;
 import com.back.boundedcontext.market.domain.Order;
 import com.back.boundedcontext.market.out.OrderRepository;
 import com.back.global.rsdata.RsData;
@@ -13,9 +14,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MarketCreateOrderUseCase {
 	private final OrderRepository orderRepository;
+	private final MarketPolicy marketPolicy;
 
 	public RsData<Order> createOrder(Cart cart) {
-		Order _order = new Order(cart);
+		Order _order = new Order(cart, marketPolicy.payoutRate());
 
 		Order order = orderRepository.save(_order);
 

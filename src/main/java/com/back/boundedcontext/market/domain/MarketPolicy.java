@@ -1,14 +1,30 @@
 package com.back.boundedcontext.market.domain;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@Service
-public class MarketPolicy {
-	public static double PRODUCT_PAYOUT_RATE;
+import com.back.boundedcontext.market.config.MarketPolicyProperties;
 
-	@Value("${custom.market.product.payoutRate}")
-	public void setProductPayoutRate(double rate) {
-		PRODUCT_PAYOUT_RATE = rate;
+import lombok.Getter;
+
+@Service
+@Getter
+public class MarketPolicy {
+
+	private final double payoutRate;
+
+	public MarketPolicy(MarketPolicyProperties props) {
+		this.payoutRate = props.payoutRate();
+	}
+
+	public double payoutRate() {
+		return payoutRate;
+	}
+
+	public long calculateSalePriceWithoutFee(long salePrice, double payoutRate) {
+		return Math.round(salePrice * payoutRate / 100);
+	}
+
+	public long calculatePayoutFee(long salePrice, double payoutRate) {
+		return salePrice - calculateSalePriceWithoutFee(salePrice, payoutRate);
 	}
 }

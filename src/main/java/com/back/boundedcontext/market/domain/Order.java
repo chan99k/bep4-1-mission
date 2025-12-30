@@ -40,21 +40,22 @@ public class Order extends BaseIdAndTime {
 
 	private LocalDateTime cancelDate;
 
-	public Order(Cart cart) {
+	public Order(Cart cart, double payoutRate) {
 		this.buyer = cart.getBuyer();
 
 		cart.getItems().forEach(item -> {
-			addItem(item.getProduct());
+			addItem(item.getProduct(), payoutRate);
 		});
 	}
 
-	public void addItem(Product product) {
+	public void addItem(Product product, double payoutRate) {
 		OrderItem orderItem = new OrderItem(
 			this,
 			product,
 			product.getName(),
 			product.getPrice(),
-			product.getSalePrice()
+			product.getSalePrice(),
+			payoutRate
 		);
 
 		items.add(orderItem);
