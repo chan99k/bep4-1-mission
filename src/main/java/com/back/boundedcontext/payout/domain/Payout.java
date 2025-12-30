@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
+import com.back.shared.payout.dto.PayoutDto;
+import com.back.shared.payout.event.PayoutCompleted;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -35,7 +37,8 @@ public class Payout extends BaseIdAndTime {
 		this.payee = payee;
 	}
 
-	public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, int relId, LocalDateTime payDate, PayoutMember payer, PayoutMember payee, long amount) {
+	public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, int relId, LocalDateTime payDate,
+		PayoutMember payer, PayoutMember payee, long amount) {
 		PayoutItem payoutItem = new PayoutItem(
 			this, eventType, relTypeCode, relId, payDate, payer, payee, amount
 		);
@@ -45,5 +48,28 @@ public class Payout extends BaseIdAndTime {
 		this.amount += amount;
 
 		return payoutItem;
+	}
+
+	public void completePayout() {
+		this.payoutDate = LocalDateTime.now();
+
+		registerEvent(
+			new PayoutCompleted(
+				toDto()
+			)
+		);
+	}
+
+	public PayoutDto toDto() {
+		return new PayoutDto(
+			getId(),
+			getCreateDate(),
+			getModifyDate(),
+			payee.getId(),
+			payee.getNickname(),
+			payoutDate,
+			amount,
+			payee.isSystem()
+		);
 	}
 }

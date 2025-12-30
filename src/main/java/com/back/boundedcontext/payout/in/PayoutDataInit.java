@@ -50,6 +50,7 @@ public class PayoutDataInit {
 			self.forceMakePayoutReadyCandidatesItems();
 			self.collectPayoutItemsMore();
 			runCollectPayoutItemsBatchJob();
+			self.completePayoutsMore();
 		};
 	}
 
@@ -76,6 +77,13 @@ public class PayoutDataInit {
 		payoutFacade.collectPayoutItemsMore(4);
 	}
 
+	@Transactional
+	public void completePayoutsMore() {
+		payoutFacade.completePayoutsMore(4);
+		payoutFacade.completePayoutsMore(2);
+		payoutFacade.completePayoutsMore(2);
+	}
+
 	private void runCollectPayoutItemsBatchJob() {
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addString(
@@ -96,4 +104,6 @@ public class PayoutDataInit {
 			log.error("job restart exception", e);
 		}
 	}
+
+
 }
