@@ -31,16 +31,16 @@ public class PayoutDataInit {
 	private final PayoutDataInit self;
 	private final PayoutFacade payoutFacade;
 	private final JobOperator jobOperator;
-	private final Job payoutCollectItemsJob;
+	private final Job payoutCollectItemsAndCompletePayoutsJob;
 
 	public PayoutDataInit(
 		@Lazy PayoutDataInit self,
-		PayoutFacade payoutFacade, JobOperator jobOperator, Job payoutCollectItemsJob
+		PayoutFacade payoutFacade, JobOperator jobOperator, Job payoutCollectItemsAndCompletePayoutsJob
 	) {
 		this.self = self;
 		this.payoutFacade = payoutFacade;
 		this.jobOperator = jobOperator;
-		this.payoutCollectItemsJob = payoutCollectItemsJob;
+		this.payoutCollectItemsAndCompletePayoutsJob = payoutCollectItemsAndCompletePayoutsJob;
 	}
 
 	@Bean
@@ -49,7 +49,7 @@ public class PayoutDataInit {
 		return args -> {
 			self.forceMakePayoutReadyCandidatesItems();
 			self.collectPayoutItemsMore();
-			runCollectPayoutItemsBatchJob();
+			runCollectItemsAndCompletePayoutsBatchJob();
 			self.completePayoutsMore();
 		};
 	}
@@ -74,17 +74,15 @@ public class PayoutDataInit {
 
 	@Transactional
 	public void collectPayoutItemsMore() {
-		payoutFacade.collectPayoutItemsMore(4);
+		payoutFacade.collectPayoutItemsMore(2);
 	}
 
 	@Transactional
 	public void completePayoutsMore() {
-		payoutFacade.completePayoutsMore(4);
-		payoutFacade.completePayoutsMore(2);
-		payoutFacade.completePayoutsMore(2);
+		payoutFacade.completePayoutsMore(1);
 	}
 
-	private void runCollectPayoutItemsBatchJob() {
+	private void runCollectItemsAndCompletePayoutsBatchJob() {
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addString(
 				"runDate",
@@ -93,7 +91,7 @@ public class PayoutDataInit {
 			.toJobParameters();
 
 		try {
-			jobOperator.start(payoutCollectItemsJob, jobParameters);
+			jobOperator.start(payoutCollectItemsAndCompletePayoutsJob, jobParameters);
 		} catch (JobInstanceAlreadyCompleteException e) {
 			log.error("Job instance already complete", e);
 		} catch (JobExecutionAlreadyRunningException e) {

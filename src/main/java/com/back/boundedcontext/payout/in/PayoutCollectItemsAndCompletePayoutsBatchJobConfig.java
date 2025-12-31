@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-public class PayoutCollectItemsBatchJobConfig {
+public class PayoutCollectItemsAndCompletePayoutsBatchJobConfig {
 	private static final int CHUNK_SIZE = 10;
 
 	private final PayoutFacade payoutFacade;
 
-	public PayoutCollectItemsBatchJobConfig(PayoutFacade payoutFacade) {
+	public PayoutCollectItemsAndCompletePayoutsBatchJobConfig(PayoutFacade payoutFacade) {
 		this.payoutFacade = payoutFacade;
 	}
 
@@ -29,7 +29,7 @@ public class PayoutCollectItemsBatchJobConfig {
 		JobRepository jobRepository,
 		Step payoutCollectItemsStep
 	) {
-		return new JobBuilder("payoutCollectItemsJob", jobRepository)
+		return new JobBuilder("payoutCollectItemsAndCompletePayoutsJob", jobRepository)
 			.start(payoutCollectItemsStep)
 			.build();
 	}
@@ -48,6 +48,23 @@ public class PayoutCollectItemsBatchJobConfig {
 				Integer processedCount = payoutFacade.collectPayoutItemsMore(CHUNK_SIZE).getData();
 
 				if (processedCount == null || processedCount == 0) {
+					return RepeatStatus.FINISHED;
+				}
+
+				contribution.incrementWriteCount(processedCount);
+
+				return RepeatStatus.CONTINUABLE;
+			})
+			.build();
+	}
+
+	@Bean
+	public Step payoutCompletePayouts(JobRepository jobRepository) {
+		return new StepBuilder("payoutCompletePayouts", jobRepository)
+			.tasklet((contribution, chunkContext) -> {
+				int processedCount = payoutFacade.completePayoutsMore(CHUNK_SIZE).getData();
+
+				if (processedCount == 0) {
 					return RepeatStatus.FINISHED;
 				}
 
