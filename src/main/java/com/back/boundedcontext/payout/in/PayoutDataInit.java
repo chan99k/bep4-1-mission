@@ -1,6 +1,5 @@
 package com.back.boundedcontext.payout.in;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -48,9 +47,7 @@ public class PayoutDataInit {
 	public ApplicationRunner payoutDataInitApplicationRunner() {
 		return args -> {
 			self.forceMakePayoutReadyCandidatesItems();
-			self.collectPayoutItemsMore();
 			runCollectItemsAndCompletePayoutsBatchJob();
-			self.completePayoutsMore();
 		};
 	}
 
@@ -85,8 +82,8 @@ public class PayoutDataInit {
 	private void runCollectItemsAndCompletePayoutsBatchJob() {
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addString(
-				"runDate",
-				LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+				"runDateTime",
+				LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 			)
 			.toJobParameters();
 

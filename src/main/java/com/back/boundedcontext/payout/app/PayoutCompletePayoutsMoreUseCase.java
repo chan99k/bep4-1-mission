@@ -22,7 +22,10 @@ public class PayoutCompletePayoutsMoreUseCase {
 		if (activePayouts.isEmpty())
 			return new RsData<>("200-1", "더 이상 정산할 정산내역이 없습니다.", 0);
 
-		activePayouts.forEach(Payout::completePayout);
+		activePayouts.forEach(payout -> {
+			payout.completePayout();
+			payoutRepository.save(payout);  // 도메인 이벤트 발행을 위해 명시적으로 save() 호출
+		});
 
 		return new RsData<>(
 			"201-1",

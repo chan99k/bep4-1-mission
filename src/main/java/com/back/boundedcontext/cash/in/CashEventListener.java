@@ -45,7 +45,7 @@ public class CashEventListener {
 		cashFacade.completeOrderPayment(event.order(), event.pgPaymentAmount());
 	}
 
-	@TransactionalEventListener
+	@TransactionalEventListener(phase = AFTER_COMMIT)
 	@Transactional(propagation = REQUIRES_NEW)
 	public void handle(PayoutCompleted event) {
 		cashFacade.completePayout(event.payoutDto());
