@@ -12,6 +12,7 @@ import com.back.shared.cash.event.CashMemberCreated;
 import com.back.shared.market.event.MarketOrderPaymentRequested;
 import com.back.shared.member.event.MemberJoined;
 import com.back.shared.member.event.MemberModified;
+import com.back.shared.payout.event.PayoutCompleted;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,5 +43,11 @@ public class CashEventListener {
 	@Transactional(propagation = REQUIRES_NEW)
 	public void handle(MarketOrderPaymentRequested event) {
 		cashFacade.completeOrderPayment(event.order(), event.pgPaymentAmount());
+	}
+
+	@TransactionalEventListener
+	@Transactional(propagation = REQUIRES_NEW)
+	public void handle(PayoutCompleted event) {
+		cashFacade.completePayout(event.payoutDto());
 	}
 }
