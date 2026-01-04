@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.back.boundedcontext.member.app.MemberFacade;
-import com.back.boundedcontext.member.domain.Member;
 import com.back.shared.post.event.PostCommentCreated;
 import com.back.shared.post.event.PostCreated;
 
@@ -25,7 +24,7 @@ public class MemberEventListener {
 	@KafkaHandler
 	public void handle(PostCreated event) {
 		try {
-			increaseMemberActivityScore(event.authorId(), 3);
+			memberFacade.increaseActivityScore(event.authorId(), 3);
 		} catch (Exception e) {
 			log.error("[Kafka] PostCreated 이벤트 처리에 실패하였습니다. event: {}, error: {}", event, e.getMessage(), e);
 			throw e;
@@ -36,7 +35,7 @@ public class MemberEventListener {
 	@KafkaHandler
 	public void handle(PostCommentCreated event) {
 		try {
-			increaseMemberActivityScore(event.postCommentDto().authorId(), 1);
+			memberFacade.increaseActivityScore(event.postCommentDto().authorId(), 1);
 		} catch (Exception e) {
 			log.error("[Kafka] PostCommentCreated 이벤트 처리에 실패하였습니다. event: {}, error: {}", event, e.getMessage(), e);
 			throw e;
@@ -46,14 +45,5 @@ public class MemberEventListener {
 	@KafkaHandler(isDefault = true)
 	public void ignoreUnknown(Object unknownEvent) {
 		log.warn("[Kafka] 알 수 없는 이벤트 수신: {}", unknownEvent);
-	}
-
-	private void increaseMemberActivityScore(int memberId, int score) {
-		Member member = memberFacade.findById(memberId).orElseThrow();
-
-		int before = member.getActivityScore();
-		int after = member.increaseActivityScore(score);
-
-		log.debug("[Event] 사용자 활동 점수가 {} -> {} 로 증가하였습니다.", before, after);
 	}
 }

@@ -2,6 +2,7 @@ package com.back.boundedcontext.member.domain;
 
 import com.back.shared.member.domain.SourceMember;
 import com.back.shared.member.dto.MemberDto;
+import com.back.shared.member.event.MemberModified;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,6 +21,7 @@ public class Member extends SourceMember {
 
 	public int increaseActivityScore(int amount) {
 		setActivityScore(getActivityScore() + amount);
+		registerEvent(new MemberModified(this.toDto()));
 		return getActivityScore();
 	}
 

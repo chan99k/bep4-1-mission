@@ -29,5 +29,8 @@ public class MemberSupport {
 		return memberRepository.findById(id);
 	}
 
-
+	@Transactional
+	public Member save(Member member) {
+		return memberRepository.save(member);
+	}
 }

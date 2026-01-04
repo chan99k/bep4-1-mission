@@ -37,6 +37,13 @@ public class MemberFacade {
 		return memberSupport.findById(id);
 	}
 
+	@Transactional
+	public void increaseActivityScore(int id, int score) {
+		Member member = memberSupport.findById(id).orElseThrow();
+		member.increaseActivityScore(score);
+		memberSupport.save(member);
+	}
+
 	/**
 	 * @return 랜덤한 사용자 계정 보안 팁을 반환하는 메서드. 현재는 그냥 고정 메시지를 출력한다.
 	 */
