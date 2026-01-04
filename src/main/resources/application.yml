@@ -23,6 +23,18 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false # 프로퍼티가 하나도 없는 객체를 JSON으로 변환할 때, 예외가 발생하지 않는다
+  kafka:
+    bootstrap-servers: localhost:19092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: true
+    consumer:
+      group-id: back
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.back.*
+        spring.json.use.type.headers: true
 
 
 logging:

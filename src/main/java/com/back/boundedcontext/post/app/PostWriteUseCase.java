@@ -10,13 +10,15 @@ import com.back.boundedcontext.post.out.PostRepository;
 import com.back.global.eventpublisher.EventPublisher;
 import com.back.global.rsdata.RsData;
 import com.back.shared.member.out.MemberApiClient;
+import com.back.shared.post.dto.PostCommentDto;
+import com.back.shared.post.event.PostCommentCreated;
 import com.back.shared.post.event.PostCreated;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여야 하지 않나?
+public class PostWriteUseCase {
 	private final PostRepository postRepository;
 	private final MemberApiClient memberApiClient;
 	private final EventPublisher eventPublisher;
@@ -26,7 +28,6 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 		return postRepository.count();
 	}
 
-	// NOTE :: 공통 응답 형식으로 바꾸는 것은 파사드 영역의 횡단 관심사가 아닌지? 유스케이스가 왜 알아야 하나요?
 	public RsData<Post> write(PostMember postMember, String title, String content) {
 
 		Post saved = postRepository.save(
@@ -57,6 +58,18 @@ public class PostWriteUseCase { // NOTE :: 유스케이스는 인터페이스여
 		PostComment postComment = post.addComment(member, content);
 
 		String randomSecureTip = memberApiClient.getRandomSecureTip();
+
+		eventPublisher.publishEvent(new PostCommentCreated(
+			new PostCommentDto(
+				postComment.getId(),
+				postComment.getCreateDate(),
+				postComment.getModifyDate(),
+				postComment.getPost().getId(),
+				postComment.getAuthor().getId(),
+				postComment.getAuthor().getUsername(),
+				postComment.getContent()
+			)
+		));
 
 		return new RsData<>(
 

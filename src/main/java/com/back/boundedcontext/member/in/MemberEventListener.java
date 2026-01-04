@@ -1,10 +1,10 @@
 package com.back.boundedcontext.member.in;
 
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.back.boundedcontext.member.app.MemberFacade;
 import com.back.boundedcontext.member.domain.Member;
@@ -17,8 +17,36 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@KafkaListener(topics = "Post", groupId = "member-post-cosumer-group")
 public class MemberEventListener {
 	private final MemberFacade memberFacade;
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@KafkaHandler
+	public void handle(PostCreated event) {
+		try {
+			increaseMemberActivityScore(event.authorId(), 3);
+		} catch (Exception e) {
+			log.error("[Kafka] PostCreated 이벤트 처리에 실패하였습니다. event: {}, error: {}", event, e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@KafkaHandler
+	public void handle(PostCommentCreated event) {
+		try {
+			increaseMemberActivityScore(event.postCommentDto().authorId(), 1);
+		} catch (Exception e) {
+			log.error("[Kafka] PostCommentCreated 이벤트 처리에 실패하였습니다. event: {}, error: {}", event, e.getMessage(), e);
+			throw e;
+		}
+	}
+
+	@KafkaHandler(isDefault = true)
+	public void ignoreUnknown(Object unknownEvent) {
+		log.warn("[Kafka] 알 수 없는 이벤트 수신: {}", unknownEvent);
+	}
 
 	private void increaseMemberActivityScore(int memberId, int score) {
 		Member member = memberFacade.findById(memberId).orElseThrow();
@@ -27,17 +55,5 @@ public class MemberEventListener {
 		int after = member.increaseActivityScore(score);
 
 		log.debug("[Event] 사용자 활동 점수가 {} -> {} 로 증가하였습니다.", before, after);
-	}
-
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handle(PostCreated event) {
-		increaseMemberActivityScore(event.authorId(), 3);
-	}
-
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void handle(PostCommentCreated event) {
-		increaseMemberActivityScore(event.postCommentDto().authorId(), 1);
 	}
 }
